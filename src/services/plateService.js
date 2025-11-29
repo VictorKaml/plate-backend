@@ -1,30 +1,49 @@
 const { calculateOutstanding } = require("../utils/calculateOutstanding");
-const { config } = require("../config/api");
+const { getBearerToken } = require("../utils/getBearerToken");
+require("dotenv").config();
 
 const API_KEY = process.env.API_KEY;
-const BEARER_TOKEN = process.env.BEARER_TOKEN;
 
-if (!API_KEY || !BEARER_TOKEN) {
-  console.error("API_KEY or BEARER_TOKEN missing in .env");
+if (!API_KEY) {
+  console.error("API_KEY missing in .env");
   process.exit(1);
 }
+
+// Use in-memory token
+let BEARER_TOKEN = process.env.BEARER_TOKEN || "";
 
 async function checkPlateService(license) {
   const url = `https://dashboard.e-parking.africa/control/history?license=${license}`;
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${BEARER_TOKEN}`,
-      "X-Api-Key": API_KEY,
-      Accept: "application/json",
-    },
-  });
+  // Inner function to fetch plate data with retry if token expired
+  async function fetchPlate(token, retry = true) {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Api-Key": API_KEY,
+        Accept: "application/json",
+      },
+    });
 
-  // directly parse JSON
-  const records = await response.json(); // this is already an array
+    // If token expired or invalid, refresh and retry once
+    if (response.status === 401 && retry) {
+      console.log("Bearer token expired, fetching new token...");
+      const newToken = await getBearerToken();
+      BEARER_TOKEN = newToken; // update in-memory
+      return fetchPlate(newToken, false); // retry once
+    }
 
-  // calculate totals
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    }
+
+    const records = await response.json(); // already JSON
+    return records;
+  }
+
+  const records = await fetchPlate(BEARER_TOKEN);
+
   const totals = calculateOutstanding(records);
 
   return {
