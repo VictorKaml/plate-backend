@@ -49,8 +49,9 @@ async function checkPlateService(license) {
   return {
     license,
     totals,
-    records,
+    //records,
   };
 }
 
 module.exports = { checkPlateService };
+
