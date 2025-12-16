@@ -13,9 +13,9 @@ router.get("/check-bill", async (req, res) => {
       endDate
     });
 
-    res.status(200).json({
+    return res.json({
       success: true,
-      ...result
+      dailyConsolidation: result
     });
   } catch (error) {
     res.status(500).json({
