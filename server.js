@@ -18,10 +18,13 @@ app.use(
 );
 
 // Routes
-app.use("/api", plateRoute, billRoute);
+// Use unique prefixes for each router
+app.use("/api/plates", plateRoute);
+app.use("/api/bills", billRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
+
 
