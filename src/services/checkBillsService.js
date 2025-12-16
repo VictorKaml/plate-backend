@@ -13,7 +13,7 @@ let BEARER_TOKEN = process.env.BEARER_TOKEN || "";
 /**
  * Service to fetch and consolidate bill payments with Date Range Filtering
  */
-async function checkBillsService(options = {}) {
+async function checkBillsService() {
   // Default both dates to today if not provided
   const today = new Date().toISOString().split('T')[0];
   const { 
@@ -31,7 +31,6 @@ async function checkBillsService(options = {}) {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
-        "X-Api-Key": API_KEY,
         Accept: "application/json",
         "Origin": "https://xcvsapp.web.app",
       },
