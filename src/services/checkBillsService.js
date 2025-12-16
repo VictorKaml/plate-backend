@@ -33,6 +33,7 @@ async function checkBillsService(options = {}) {
         Authorization: `Bearer ${token}`,
         "X-Api-Key": API_KEY,
         Accept: "application/json",
+        "Origin": "https://xcvsapp.web.app",
       },
     });
 
