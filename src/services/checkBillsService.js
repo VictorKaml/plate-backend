@@ -32,7 +32,6 @@ async function checkBillsService() {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
-        "Origin": "https://xcvsapp.web.app",
       },
     });
 
