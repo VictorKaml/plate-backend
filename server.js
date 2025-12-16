@@ -12,7 +12,7 @@ app.use(express.json());
 // CORS
 app.use(
   cors({
-    origin: "*",
+   origin: ["https://xcvsapp.web.app", "http://localhost:3000"],
     methods: ["POST", "GET"],
   })
 );
@@ -26,5 +26,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
+
 
 
