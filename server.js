@@ -4,6 +4,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const plateRoute = require("./src/routes/plateRoute"); // remove .js if using CommonJS
+const billRoute = require("./src/routes/billRoutes");
 
 const app = express();
 app.use(express.json());
@@ -17,9 +18,10 @@ app.use(
 );
 
 // Routes
-app.use("/api", plateRoute);
+app.use("/api", plateRoute, billRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
+
